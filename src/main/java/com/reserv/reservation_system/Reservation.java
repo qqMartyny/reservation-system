@@ -5,7 +5,7 @@ import java.time.LocalDate;
 public record Reservation(
     Long id,
     Long userId,
-    Short roomId,
+    Long roomId,
     LocalDate startDate,
     LocalDate endDate,
     ReservationStatus status
