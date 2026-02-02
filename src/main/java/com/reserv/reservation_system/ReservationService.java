@@ -1,40 +1,28 @@
 package com.reserv.reservation_system;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicLong;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class ReservationService {
 
-    private final Map<Long, Reservation> reservationMap = Map.of(
-        1L, new Reservation(
-            1L,
-            12L,
-            143L,
-            LocalDate.now(),
-            LocalDate.now().plusDays(7),
-            ReservationStatus.APPROVED
-        ), 
-        2L, new Reservation(
-            2L,
-            13L,
-            14123L,
-            LocalDate.now(),
-            LocalDate.now().plusDays(7),
-            ReservationStatus.APPROVED
-        ),
-        3L, new Reservation(
-            3L,
-            13L,
-            14343L,
-            LocalDate.now(),
-            LocalDate.now().plusDays(7),
-            ReservationStatus.APPROVED
-        ));
+    private static final Logger log = LoggerFactory.getLogger(ReservationService.class);
+
+    private final Map<Long, Reservation> reservationMap;
+    private final AtomicLong idCounter;
+
+    public ReservationService() {
+        this.reservationMap = new HashMap<>();
+        this.idCounter = new AtomicLong();
+    }
 
     public Reservation getReservationById(Long id) {
         if (!reservationMap.containsKey(id)) {
@@ -45,6 +33,36 @@ public class ReservationService {
 
     public List<Reservation> findAllReservations() {
         return reservationMap.values().stream().toList();
+    }
+
+    public Reservation createReservation(Reservation reservationToCreate) {
+    
+        if (reservationToCreate.id() != null) {
+            log.info(
+                "Client tried to set id while creating a new Reservation:\n"
+                + reservationToCreate
+            );
+            throw new IllegalArgumentException("id should be empty");
+        }
+
+        if (reservationToCreate.status() != null) {
+            log.info(
+                "Client tried to set status while creating a new Reservation:\n"
+                + reservationToCreate
+            );
+            throw new IllegalArgumentException("status should be empty");
+        }
+
+        var newReservation = new Reservation(
+            idCounter.incrementAndGet(),
+            reservationToCreate.userId(),
+            reservationToCreate.roomId(),
+            reservationToCreate.startDate(),
+            reservationToCreate.endDate(),
+            ReservationStatus.PENDING
+        );
+        reservationMap.put(newReservation.id(), newReservation);
+        return newReservation;
     }
     
 }
