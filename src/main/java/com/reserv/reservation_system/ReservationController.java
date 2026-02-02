@@ -1,5 +1,7 @@
 package com.reserv.reservation_system;
 
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,5 +19,10 @@ public class ReservationController {
     public Reservation getReservationById(@PathVariable("id") Long id) {
 
         return reservationService.getReservationById(id);
+    }
+
+    @GetMapping("/getAll")
+    public List<Reservation> getAllReservations() {
+        return reservationService.findAllReservations();
     }
 }
