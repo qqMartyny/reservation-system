@@ -1,18 +1,19 @@
 package com.reserv.reservation_system;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -44,23 +45,39 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Reservation>  createReservation(@RequestBody Reservation reservationToCreate) {
+    public ResponseEntity<Reservation>  createReservation(
+        @RequestBody Reservation reservationToCreate
+    ) {
         
         log.info("Called createReservation");
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header("test-header", "123")
                 .body(reservationService.createReservation(reservationToCreate));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Reservation> updateReservation(
+        @PathVariable("id") Long id,
+        @RequestBody Reservation reservationToUpdate
+    ) {
+        log.info("Called reservationToUpdate with id {id} for reservation {reservationToUpdate}",
+            id, reservationToUpdate);
+        var updated = reservationService.updateReservation(id, reservationToUpdate);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteReservation(
+        @PathVariable("id") Long id
+    ) {
+        log.info("Called reservationToDelete with id {id}", id);
+        try {
+            reservationService.deleteReservation(id);
+            return ResponseEntity.ok().build();
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(404).build();
+        }
         
-        // return reservationService.createReservation(reservationToCreate);
-        
-        // return new Reservation(
-        //     reservationToCreate.id(),
-        //     reservationToCreate.userId(),
-        //     reservationToCreate.roomId(),
-        //     reservationToCreate.startDate(),
-        //     reservationToCreate.endDate(),
-        //     reservationToCreate.status() 
-        // );
     }
 }

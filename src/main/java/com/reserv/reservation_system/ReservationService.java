@@ -63,5 +63,36 @@ public class ReservationService {
         reservationMap.put(newReservation.id(), newReservation);
         return newReservation;
     }
-    
+
+    public Reservation updateReservation(Long id, Reservation reservationToUpdate) {
+        if (!reservationMap.containsKey(id)) {
+            throw new NoSuchElementException("No Reservation with id: " + id);
+        }
+
+        var reservation = reservationMap.get(id);
+
+        if (reservation.status() != ReservationStatus.PENDING) {
+            throw new IllegalStateException("Can't modify reservation with status=" 
+            + reservation.status());
+        }
+
+        var updatedReservation = new Reservation(
+            idCounter.incrementAndGet(),
+            reservationToUpdate.userId(),
+            reservationToUpdate.roomId(),
+            reservationToUpdate.startDate(),
+            reservationToUpdate.endDate(),
+            ReservationStatus.PENDING
+        );
+
+        reservationMap.put(updatedReservation.id(), updatedReservation);
+        return updatedReservation;
+    }
+
+    public void deleteReservation(Long id) {
+        if (!reservationMap.containsKey(id)) {
+            throw new NoSuchElementException("No Reservation with id: " + id);
+        }
+        reservationMap.remove(id);
+    }
 }
