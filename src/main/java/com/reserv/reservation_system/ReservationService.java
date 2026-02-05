@@ -30,10 +30,11 @@ public class ReservationService {
 
     public Reservation getReservationById(Long id) {
 
-        return toDomainReservation(repository.findById(id)
+        ReservationEntity reservationEntity =  repository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(
                     "No Reservation with id: " + id
-                )));
+                ));
+        return toDomainReservation(reservationEntity);
     }
 
     public List<Reservation> findAllReservations() {
