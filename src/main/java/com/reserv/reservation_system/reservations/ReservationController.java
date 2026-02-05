@@ -1,4 +1,4 @@
-package com.reserv.reservation_system;
+package com.reserv.reservation_system.reservations;
 
 import java.util.List;
 
