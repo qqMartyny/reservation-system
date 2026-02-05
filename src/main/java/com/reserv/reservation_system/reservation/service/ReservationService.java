@@ -58,14 +58,9 @@ public class ReservationService {
             throw new IllegalArgumentException("End date has to be at least 1 more day than start date");
         }
 
-        var entityToSave = new ReservationEntity(
-            null,
-            reservationToCreate.userId(),
-            reservationToCreate.roomId(),
-            reservationToCreate.startDate(),
-            reservationToCreate.endDate(),
-            ReservationStatus.PENDING
-        );
+        var entityToSave = mapper.toEntity(reservationToCreate);
+        entityToSave.setStatus(ReservationStatus.PENDING);
+
         var savedEntity = repository.save(entityToSave);
         return mapper.toDomain(savedEntity);
     }
@@ -87,16 +82,12 @@ public class ReservationService {
             + reservationEntity.getStatus());
         }
 
-        var reservationToSave = new ReservationEntity(
-            reservationEntity.getId(),
-            reservationToUpdate.userId(),
-            reservationToUpdate.roomId(),
-            reservationToUpdate.startDate(),
-            reservationToUpdate.endDate(),
-            ReservationStatus.PENDING
-        );
+        var reservationToSave = mapper.toEntity(reservationToUpdate);
+        reservationToSave.setId(reservationEntity.getId());
+        reservationToSave.setStatus(ReservationStatus.PENDING);
 
-        var updatedEntity =  repository.save(reservationToSave);
+        var updatedEntity = repository.save(reservationToSave);
+
         return mapper.toDomain(updatedEntity);
     }
 
