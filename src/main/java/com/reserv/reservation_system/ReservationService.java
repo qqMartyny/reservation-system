@@ -1,31 +1,24 @@
 package com.reserv.reservation_system;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @Service
 public class ReservationService {
 
     private static final Logger log = LoggerFactory.getLogger(ReservationService.class);
 
-    private final Map<Long, Reservation> reservationMap;
-    private final AtomicLong idCounter;
-
     private final ReservationRepository repository;
 
     public ReservationService(ReservationRepository repository) {
         this.repository = repository;
-        reservationMap = new HashMap<>();
-        idCounter = new AtomicLong();
     }
 
     public Reservation getReservationById(Long id) {
@@ -92,13 +85,14 @@ public class ReservationService {
         return toDomainReservation(updatedEntity);
     }
 
-    public void deleteReservation(Long id) {
-        var reservationEntity = repository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
-                    "No Reservation with id: " + id
-                ));
+    @Transactional
+    public void cancelReservation(Long id) {
+        if (!repository.existsById(id)) {
+            throw new EntityNotFoundException("No Reservation with id: " + id);
+        }
         
-        repository.delete(reservationEntity);
+        repository.setStatus(id, ReservationStatus.CANCELLED);
+        log.info("Succesfully cancelled reservation with id=" + id);
     }
 
     public Reservation approveReservation(Long id) {
