@@ -1,5 +1,6 @@
 package com.reserv.reservation_system.reservation.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -128,7 +129,11 @@ public class ReservationService {
             + reservationEntity.getStatus());
         }
 
-        var isConflict = isReservationConflict(reservationEntity);
+        var isConflict = isReservationConflict(
+            reservationEntity.getRoomId(),
+            reservationEntity.getStartDate(),
+            reservationEntity.getEndDate()
+        );
 
         if (isConflict) {
             throw new IllegalStateException("Can't approve reservation because of conflict");
@@ -140,23 +145,22 @@ public class ReservationService {
         return toDomainReservation(reservationEntity);
     }
 
-    private boolean isReservationConflict(ReservationEntity reservation) {
+    private boolean isReservationConflict(
+        Long roomId,
+        LocalDate startDate,
+        LocalDate endDate
+    ) {
 
-        List<ReservationEntity> allReservations = repository.findAll();
+        List<Long> conflictsWith = repository.findConflictReservationIds(
+                roomId, 
+                startDate, 
+                endDate, 
+                ReservationStatus.APPROVED);
+        if (conflictsWith.isEmpty())
+            return false;
 
-        for (ReservationEntity existingReservation : allReservations) {
-            if (reservation.getId().equals(existingReservation.getId()))
-                continue;
-            if (!reservation.getRoomId().equals(existingReservation.getRoomId()))
-                continue;
-            if (!existingReservation.getStatus().equals(ReservationStatus.APPROVED))
-                continue;
-            if (reservation.getStartDate().isBefore(existingReservation.getEndDate())
-                && existingReservation.getStartDate().isBefore(reservation.getEndDate()))
-            return true;
-        }
-
-        return false;
+        log.info("Conflicts with id=", conflictsWith);
+        return true;
     }
 
     private Reservation toDomainReservation(ReservationEntity reservation) {
