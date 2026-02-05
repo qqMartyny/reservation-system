@@ -5,8 +5,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import jakarta.transaction.Transactional;
-
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
     
     @Modifying
