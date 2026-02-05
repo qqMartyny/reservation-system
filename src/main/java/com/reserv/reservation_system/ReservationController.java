@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/reservation")
 public class ReservationController {
@@ -45,7 +47,7 @@ public class ReservationController {
 
     @PostMapping
     public ResponseEntity<Reservation>  createReservation(
-        @RequestBody Reservation reservationToCreate
+        @RequestBody @Valid Reservation reservationToCreate
     ) {
         
         log.info("Called createReservation");
@@ -58,7 +60,7 @@ public class ReservationController {
     @PutMapping("/{id}")
     public ResponseEntity<Reservation> updateReservation(
         @PathVariable("id") Long id,
-        @RequestBody Reservation reservationToUpdate
+        @RequestBody @Valid Reservation reservationToUpdate
     ) {
         log.info("Called updateReservation with id {id} for reservation {reservationToUpdate}",
             id, reservationToUpdate);
