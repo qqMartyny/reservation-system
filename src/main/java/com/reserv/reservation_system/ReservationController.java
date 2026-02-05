@@ -1,7 +1,6 @@
 package com.reserv.reservation_system;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +71,7 @@ public class ReservationController {
         @PathVariable("id") Long id
     ) {
         log.info("Called deleteReservation with id {id} ", id);
-        
+
         reservationService.cancelReservation(id);
         return ResponseEntity.ok().build();
     }
