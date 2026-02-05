@@ -1,4 +1,4 @@
-package com.reserv.reservation_system.web;
+package com.reserv.reservation_system.common.exception;
 
 import java.time.LocalDateTime;
 

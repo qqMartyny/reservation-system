@@ -1,4 +1,4 @@
-package com.reserv.reservation_system.reservations;
+package com.reserv.reservation_system.reservation.service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -6,6 +6,11 @@ import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import com.reserv.reservation_system.reservation.domain.Reservation;
+import com.reserv.reservation_system.reservation.domain.ReservationStatus;
+import com.reserv.reservation_system.reservation.persistence.ReservationEntity;
+import com.reserv.reservation_system.reservation.persistence.ReservationRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;

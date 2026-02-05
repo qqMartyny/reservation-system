@@ -1,4 +1,4 @@
-package com.reserv.reservation_system.reservations;
+package com.reserv.reservation_system.reservation.api;
 
 import java.util.List;
 
@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.reserv.reservation_system.reservation.domain.Reservation;
+import com.reserv.reservation_system.reservation.service.ReservationService;
 
 import jakarta.validation.Valid;
 

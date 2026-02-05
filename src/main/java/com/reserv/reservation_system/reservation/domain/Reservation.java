@@ -1,4 +1,4 @@
-package com.reserv.reservation_system.reservations;
+package com.reserv.reservation_system.reservation.domain;
 
 import java.time.LocalDate;
 

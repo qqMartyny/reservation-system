@@ -1,6 +1,8 @@
-package com.reserv.reservation_system.reservations;
+package com.reserv.reservation_system.reservation.persistence;
 
 import java.time.LocalDate;
+
+import com.reserv.reservation_system.reservation.domain.ReservationStatus;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
