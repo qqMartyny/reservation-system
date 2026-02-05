@@ -23,8 +23,11 @@ public class ReservationService {
 
     private final ReservationRepository repository;
 
-    public ReservationService(ReservationRepository repository) {
+    private ReservationMapper mapper;
+
+    public ReservationService(ReservationRepository repository, ReservationMapper mapper) {
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     public Reservation getReservationById(Long id) {
@@ -33,14 +36,14 @@ public class ReservationService {
                 .orElseThrow(() -> new EntityNotFoundException(
                     "No Reservation with id: " + id
                 ));
-        return toDomainReservation(reservationEntity);
+        return mapper.toDomain(reservationEntity);
     }
 
     public List<Reservation> findAllReservations() {
         List<ReservationEntity> allEntities = repository.findAll();
 
         return allEntities.stream()
-                .map(it -> toDomainReservation(it)
+                .map(it -> mapper.toDomain(it)
                 ).toList();
     }
 
@@ -64,7 +67,7 @@ public class ReservationService {
             ReservationStatus.PENDING
         );
         var savedEntity = repository.save(entityToSave);
-        return toDomainReservation(savedEntity);
+        return mapper.toDomain(savedEntity);
     }
 
     public Reservation updateReservation(Long id, Reservation reservationToUpdate) {
@@ -94,7 +97,7 @@ public class ReservationService {
         );
 
         var updatedEntity =  repository.save(reservationToSave);
-        return toDomainReservation(updatedEntity);
+        return mapper.toDomain(updatedEntity);
     }
 
     @Transactional
@@ -142,7 +145,7 @@ public class ReservationService {
         reservationEntity.setStatus(ReservationStatus.APPROVED);
         repository.save(reservationEntity);
 
-        return toDomainReservation(reservationEntity);
+        return mapper.toDomain(reservationEntity);
     }
 
     private boolean isReservationConflict(
@@ -163,14 +166,5 @@ public class ReservationService {
         return true;
     }
 
-    private Reservation toDomainReservation(ReservationEntity reservation) {
-        return new Reservation(
-            reservation.getId(),
-            reservation.getUserId(),
-            reservation.getRoomId(),
-            reservation.getStartDate(),
-            reservation.getEndDate(),
-            reservation.getStatus()        
-        );
-    }
+    
 }
