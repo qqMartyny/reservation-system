@@ -1,5 +1,11 @@
 package com.reserv.reservation_system;
 
-public record ErrorResponseDto() {
+import java.time.LocalDateTime;
+
+public record ErrorResponseDto(
+    String messege,
+    String erroeMessege,
+    LocalDateTime errorTime
+) {
     
 }
