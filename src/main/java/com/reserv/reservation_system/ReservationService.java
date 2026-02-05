@@ -10,6 +10,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import jakarta.persistence.EntityNotFoundException;
+
 @Service
 public class ReservationService {
 
@@ -27,24 +29,18 @@ public class ReservationService {
     }
 
     public Reservation getReservationById(Long id) {
-        if (!reservationMap.containsKey(id)) {
-            throw new NoSuchElementException("No Reservation with id: " + id);
-        }
-        return reservationMap.get(id);
+
+        return toDomainReservation(repository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException(
+                    "No Reservation with id: " + id
+                )));
     }
 
     public List<Reservation> findAllReservations() {
         List<ReservationEntity> allEntities = repository.findAll();
 
         return allEntities.stream()
-                .map(it ->
-                    new Reservation(
-                            it.getId(), 
-                            it.getUserId(), 
-                            it.getRoomId(), 
-                            it.getStartDate(), 
-                            it.getEndDate(), 
-                            it.getStatus())
+                .map(it -> toDomainReservation(it)
                 ).toList();
     }
 
@@ -151,5 +147,16 @@ public class ReservationService {
         }
 
         return false;
+    }
+
+    private Reservation toDomainReservation(ReservationEntity reservation) {
+        return new Reservation(
+            idCounter.incrementAndGet(),
+            reservation.getUserId(),
+            reservation.getRoomId(),
+            reservation.getStartDate(),
+            reservation.getEndDate(),
+            reservation.getStatus()        
+        );
     }
 }
