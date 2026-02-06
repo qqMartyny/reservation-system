@@ -13,9 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reserv.reservation_system.reservation.domain.Reservation;
+import com.reserv.reservation_system.reservation.service.ReservationSearchFilter;
 import com.reserv.reservation_system.reservation.service.ReservationService;
 
 import jakarta.validation.Valid;
@@ -42,10 +44,20 @@ public class ReservationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> getAllReservations() {
+    public ResponseEntity<List<Reservation>> getAllReservations(
+            @RequestParam("roomId") Long roomId,
+            @RequestParam("userId") Long userId,
+            @RequestParam("pageSize") Integer pageSize,
+            @RequestParam("pageNumber") Integer pageNumber
+    ) {
         log.info("Called getAllReservations()");
+        var filter = new ReservationSearchFilter(
+                roomId, 
+                userId, 
+                pageSize, 
+                pageNumber);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(reservationService.findAllReservations());
+                .body(reservationService.searchAllByFilter());
     }
 
     @PostMapping

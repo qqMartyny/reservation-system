@@ -6,6 +6,7 @@ import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.reserv.reservation_system.reservation.domain.Reservation;
@@ -25,6 +26,8 @@ public class ReservationService {
 
     private ReservationMapper mapper;
 
+    private ReservationSearchFilter filter;
+
     public ReservationService(ReservationRepository repository, ReservationMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
@@ -39,8 +42,19 @@ public class ReservationService {
         return mapper.toDomain(reservationEntity);
     }
 
-    public List<Reservation> findAllReservations() {
-        List<ReservationEntity> allEntities = repository.findAll();
+    public List<Reservation> searchAllByFilter() {
+
+        int pageSize = filter.pageSize() != null ? filter.pageSize() : 10;
+        int pageNumber = filter.pageNumber() != null ? filter.pageNumber() : 0;
+        var pageable = Pageable
+                .ofSize(pageSize)
+                .withPage(pageNumber);
+
+        List<ReservationEntity> allEntities = repository.searchAllByFilter(
+                filter.roomId(),
+                filter.userId(),
+                pageable
+        );
 
         return allEntities.stream()
                 .map(it -> mapper.toDomain(it)

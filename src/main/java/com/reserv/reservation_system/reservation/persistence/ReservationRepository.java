@@ -3,11 +3,13 @@ package com.reserv.reservation_system.reservation.persistence;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import com.reserv.reservation_system.reservation.domain.Reservation;
 import com.reserv.reservation_system.reservation.domain.ReservationStatus;
 
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
@@ -37,5 +39,17 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
         @Param("startDate") LocalDate starDate,
         @Param("endDate") LocalDate endDate,
         @Param("status") ReservationStatus status
+    );
+
+    @Query(
+        """
+            SELECT r.id from ReservationEntity r
+            WHERE r.roomId = :roomId
+            AND r.userId = :userId
+        """)
+    List<ReservationEntity> searchAllByFilter(
+        @Param("roomId") Long roomId,
+        @Param("userId") Long userId,
+        Pageable pageable
     );
 }
