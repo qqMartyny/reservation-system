@@ -45,10 +45,10 @@ public class ReservationController {
 
     @GetMapping
     public ResponseEntity<List<Reservation>> getAllReservations(
-            @RequestParam("roomId") Long roomId,
-            @RequestParam("userId") Long userId,
-            @RequestParam("pageSize") Integer pageSize,
-            @RequestParam("pageNumber") Integer pageNumber
+            @RequestParam(name = "roomId", required = false) Long roomId,
+            @RequestParam(name = "userId", required = false) Long userId,
+            @RequestParam(name = "pageSize", required = false) Integer pageSize,
+            @RequestParam(name = "pageNumber", required = false) Integer pageNumber
     ) {
         log.info("Called getAllReservations()");
         var filter = new ReservationSearchFilter(
@@ -57,7 +57,7 @@ public class ReservationController {
                 pageSize, 
                 pageNumber);
         return ResponseEntity.status(HttpStatus.OK)
-                .body(reservationService.searchAllByFilter());
+                .body(reservationService.searchAllByFilter(filter));
     }
 
     @PostMapping

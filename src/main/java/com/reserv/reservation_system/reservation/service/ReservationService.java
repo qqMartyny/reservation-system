@@ -26,8 +26,6 @@ public class ReservationService {
 
     private ReservationMapper mapper;
 
-    private ReservationSearchFilter filter;
-
     public ReservationService(ReservationRepository repository, ReservationMapper mapper) {
         this.repository = repository;
         this.mapper = mapper;
@@ -42,7 +40,9 @@ public class ReservationService {
         return mapper.toDomain(reservationEntity);
     }
 
-    public List<Reservation> searchAllByFilter() {
+    public List<Reservation> searchAllByFilter(
+        ReservationSearchFilter filter
+    ) {
 
         int pageSize = filter.pageSize() != null ? filter.pageSize() : 10;
         int pageNumber = filter.pageNumber() != null ? filter.pageNumber() : 0;
