@@ -22,5 +22,10 @@ public record Reservation(
 
     ReservationStatus status
 ) {
+    public Reservation {
+        if(!endDate.isAfter(startDate)) {
+            throw new IllegalArgumentException("End date must be after start date");
+        }
+    }
     
 }

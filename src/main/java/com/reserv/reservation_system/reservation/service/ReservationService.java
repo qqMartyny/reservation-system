@@ -74,11 +74,6 @@ public class ReservationService {
             throw new IllegalArgumentException("status should be empty");
         }
 
-        if (!reservationToCreate.endDate()
-                .isAfter(reservationToCreate.startDate())) {
-            throw new IllegalArgumentException("End date has to be at least 1 more day than start date");
-        }
-
         var entityToSave = mapper.toEntity(reservationToCreate);
         entityToSave.setStatus(ReservationStatus.PENDING);
 
@@ -92,11 +87,6 @@ public class ReservationService {
                 .orElseThrow(() -> new EntityNotFoundException(
                     "No Reservation with id: " + id
                 ));
-        
-        if (!reservationToUpdate.endDate()
-                .isAfter(reservationToUpdate.startDate())) {
-            throw new IllegalArgumentException("End date has to be at least 1 more day than start date");
-        }
 
         if (reservationEntity.getStatus() != ReservationStatus.PENDING) {
             throw new IllegalStateException("Can't modify reservation with status=" 
