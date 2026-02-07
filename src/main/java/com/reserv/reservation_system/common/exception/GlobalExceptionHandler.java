@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.OptimisticLockException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -60,6 +61,21 @@ public class GlobalExceptionHandler {
         );
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(errorDto);
+    }
+
+    @ExceptionHandler(OptimisticLockException.class)
+    public ResponseEntity<ErrorResponseDto> handleOptimisticLock(OptimisticLockException e) {
+        log.error("Handle optimistic lock exception {}", e);
+
+        var errorDto = new ErrorResponseDto(
+                "Reservation was modified by another request", 
+                e.getMessage(), 
+                LocalDateTime.now()
+        );
+
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
                 .body(errorDto);
     }
 
