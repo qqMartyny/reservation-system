@@ -1,5 +1,6 @@
 package com.reserv.reservation_system.reservation.availability;
 
-public class AvailabilityController {
-    
+public enum AvailabilityStatus {
+    AVAILABLE,
+    RESERVED
 }

@@ -1,5 +1,8 @@
 package com.reserv.reservation_system.reservation.availability;
 
-public class CheckAvailabilityResponse {
+public record CheckAvailabilityResponse(
+    String message,
+    AvailabilityStatus status
+) {
     
 }
