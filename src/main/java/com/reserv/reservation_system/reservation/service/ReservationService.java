@@ -126,7 +126,7 @@ public class ReservationService {
     public Reservation approveReservation(Long id) {
 
         var reservationEntity = repository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException(
+                .orElseThrow(() -> new EntityNotFoundException(
                     "No Reservation with id: " + id
                 ));
 
