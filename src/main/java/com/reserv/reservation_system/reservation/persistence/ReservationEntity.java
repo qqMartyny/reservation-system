@@ -32,6 +32,8 @@ public class ReservationEntity {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private ReservationStatus status;
+    @Column(name = "version")
+    private Long version;
 
     public ReservationEntity(Long id, Long userId, Long roomId, LocalDate startDate, LocalDate endDate,
             ReservationStatus status) {
@@ -94,6 +96,11 @@ public class ReservationEntity {
         this.status = status;
     }
 
-    
-    
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 }

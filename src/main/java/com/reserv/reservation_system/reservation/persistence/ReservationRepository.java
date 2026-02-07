@@ -9,7 +9,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.reserv.reservation_system.reservation.domain.Reservation;
 import com.reserv.reservation_system.reservation.domain.ReservationStatus;
 
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
@@ -44,8 +43,8 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     @Query(
         """
             SELECT r.id from ReservationEntity r
-            WHERE r.roomId = :roomId
-            AND r.userId = :userId
+            WHERE (:roomId IS NULL OR r.roomId = :roomId)
+            AND (:userId IS NULL OR r.userId = :userId)
         """)
     List<ReservationEntity> searchAllByFilter(
         @Param("roomId") Long roomId,
