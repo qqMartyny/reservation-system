@@ -122,6 +122,7 @@ public class ReservationService {
         log.info("Succesfully cancelled reservation with id=" + id);
     }
 
+    @Transactional
     public Reservation approveReservation(Long id) {
 
         var reservationEntity = repository.findById(id)
