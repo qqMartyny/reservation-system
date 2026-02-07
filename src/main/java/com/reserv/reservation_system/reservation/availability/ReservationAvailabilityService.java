@@ -27,7 +27,7 @@ public class ReservationAvailabilityService {
         LocalDate endDate
     ) {
 
-        if (endDate.isAfter(startDate)) {
+        if (!endDate.isAfter(startDate)) {
             throw new IllegalArgumentException("End date has to be at least 1 more day than start date");
         }
 
