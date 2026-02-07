@@ -1,7 +1,6 @@
 package com.reserv.reservation_system.reservation.service;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -135,14 +134,23 @@ public class ReservationService {
             + reservationEntity.getStatus());
         }
 
-        var isAvailableToApprove = availabilityService.isReservationAvailable(
+        List<ReservationEntity> conflicts = repository.findAndLockConflictingReservations(
             reservationEntity.getRoomId(),
             reservationEntity.getStartDate(),
-            reservationEntity.getEndDate()
+            reservationEntity.getEndDate(),
+            ReservationStatus.APPROVED
         );
 
-        if (!isAvailableToApprove) {
-            throw new IllegalStateException("Can't approve reservation because of conflict");
+        if (!conflicts.isEmpty()) {
+            log.warn(
+                "Cannot approve reservation id={} due to conflicts: {}",
+                id,
+                conflicts.stream().map(ReservationEntity::getId).toList()
+            );
+            throw new IllegalStateException(
+                "Cannot approve reservation beacause of conflicts: {}"
+                + conflicts.stream().map(ReservationEntity::getId).toList()
+            );
         }
 
         reservationEntity.setStatus(ReservationStatus.APPROVED);
