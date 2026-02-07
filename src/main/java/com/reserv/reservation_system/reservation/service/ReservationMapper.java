@@ -8,7 +8,7 @@ import com.reserv.reservation_system.reservation.persistence.ReservationEntity;
 @Component
 public class ReservationMapper {
 
-    private Reservation toDomain(ReservationEntity reservation) {
+    public Reservation toDomain(ReservationEntity reservation) {
         return new Reservation(
             reservation.getId(),
             reservation.getUserId(),
@@ -19,7 +19,7 @@ public class ReservationMapper {
         );
     }
 
-    private ReservationEntity toEntity(Reservation reservation) {
+    public ReservationEntity toEntity(Reservation reservation) {
         return new ReservationEntity(
             reservation.id(),
             reservation.userId(),

@@ -25,8 +25,6 @@ public class ReservationService {
 
     private final ReservationMapper mapper;
 
-    private final ReservationAvailabilityService availabilityService;
-
     public ReservationService(
         ReservationRepository repository, 
         ReservationMapper mapper,
@@ -34,7 +32,6 @@ public class ReservationService {
     ) {
         this.repository = repository;
         this.mapper = mapper;
-        this.availabilityService = availabilityService;
     }
 
     public Reservation getReservationById(Long id) {
