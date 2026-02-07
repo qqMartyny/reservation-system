@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.reserv.reservation_system.reservation.availability.ReservationAvailabilityService;
 import com.reserv.reservation_system.reservation.domain.Reservation;
 import com.reserv.reservation_system.reservation.domain.ReservationStatus;
 import com.reserv.reservation_system.reservation.persistence.ReservationEntity;
@@ -24,11 +25,18 @@ public class ReservationService {
 
     private final ReservationRepository repository;
 
-    private ReservationMapper mapper;
+    private final ReservationMapper mapper;
 
-    public ReservationService(ReservationRepository repository, ReservationMapper mapper) {
+    private final ReservationAvailabilityService availabilityService;
+
+    public ReservationService(
+        ReservationRepository repository, 
+        ReservationMapper mapper,
+        ReservationAvailabilityService availabilityService
+    ) {
         this.repository = repository;
         this.mapper = mapper;
+        this.availabilityService = availabilityService;
     }
 
     public Reservation getReservationById(Long id) {
@@ -137,13 +145,13 @@ public class ReservationService {
             + reservationEntity.getStatus());
         }
 
-        var isConflict = isReservationConflict(
+        var isAvailableToApprove = availabilityService.isReservationAvailable(
             reservationEntity.getRoomId(),
             reservationEntity.getStartDate(),
             reservationEntity.getEndDate()
         );
 
-        if (isConflict) {
+        if (!isAvailableToApprove) {
             throw new IllegalStateException("Can't approve reservation because of conflict");
         }
 
@@ -152,24 +160,4 @@ public class ReservationService {
 
         return mapper.toDomain(reservationEntity);
     }
-
-    private boolean isReservationConflict(
-        Long roomId,
-        LocalDate startDate,
-        LocalDate endDate
-    ) {
-
-        List<Long> conflictsWith = repository.findConflictReservationIds(
-                roomId, 
-                startDate, 
-                endDate, 
-                ReservationStatus.APPROVED);
-        if (conflictsWith.isEmpty())
-            return false;
-
-        log.info("Conflicts with id=", conflictsWith);
-        return true;
-    }
-
-    
 }
