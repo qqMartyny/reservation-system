@@ -3,8 +3,8 @@ package com.reserv.reservation_system.common.exception;
 import java.time.LocalDateTime;
 
 public record ErrorResponseDto(
-    String messege,
-    String erroeMessege,
+    String message,
+    String erroMessage,
     LocalDateTime errorTime
 ) {
     
