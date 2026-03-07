@@ -4,10 +4,9 @@ import java.time.LocalDate;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Null;
 
 public record Reservation(
-    @Null
+    @NotNull
     Long id,
     @NotNull
     Long userId,
