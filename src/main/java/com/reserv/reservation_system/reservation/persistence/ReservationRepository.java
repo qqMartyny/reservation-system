@@ -42,7 +42,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     );
 
     @Query("""
-        SELECT r.id from ReservationEntity r
+        SELECT r from ReservationEntity r
         WHERE (:roomId IS NULL OR r.roomId = :roomId)
         AND (:userId IS NULL OR r.userId = :userId)
     """)
