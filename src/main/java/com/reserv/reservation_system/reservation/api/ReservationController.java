@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.reserv.reservation_system.reservation.api.dto.ReservationRequest;
 import com.reserv.reservation_system.reservation.api.dto.ReservationResponse;
-import com.reserv.reservation_system.reservation.domain.Reservation;
 import com.reserv.reservation_system.reservation.service.ReservationMapper;
 import com.reserv.reservation_system.reservation.service.ReservationSearchFilter;
 import com.reserv.reservation_system.reservation.service.ReservationService;
@@ -81,13 +80,12 @@ public class ReservationController {
         
         log.info("Called createReservation");
 
-        Reservation domain = mapper.toDomain(request);
-        Reservation saved = reservationService.createReservation(domain);
-        ReservationResponse response = mapper.toResponse(saved);
+        ReservationResponse response = mapper.toResponse(
+            reservationService.createReservation(mapper.toDomain(request))
+        );
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .header("test-header", "123")
-                .body(response);
+            .body(response);
     }
 
     @PutMapping("/{id}")
@@ -98,9 +96,9 @@ public class ReservationController {
         log.info("Called updateReservation with id {} for reservation {}",
             id, request);
 
-        Reservation domain = mapper.toDomain(request);
-        Reservation saved = reservationService.updateReservation(id, domain);
-        ReservationResponse response = mapper.toResponse(saved);
+        ReservationResponse response = mapper.toResponse(
+            reservationService.updateReservation(id, mapper.toDomain(request))
+        );
         return ResponseEntity.ok(response);
     }
 
