@@ -3,7 +3,7 @@ package com.reserv.reservation_system.reservation.api.dto;
 import java.time.LocalDate;
 
 
-public record CreateReservationResponse(
+public record ReservationResponse(
     Long id,
     Long userId,
     Long roomId,
