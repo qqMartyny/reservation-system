@@ -32,7 +32,7 @@ public class ReservationMapper {
         );
     }
 
-    public Reservation fromRequestToDomain(CreateReservationRequest reservationRequest) {
+    public Reservation toDomain(CreateReservationRequest reservationRequest) {
         return new Reservation(
             null, 
             reservationRequest.userId(),
@@ -43,7 +43,7 @@ public class ReservationMapper {
         );
     }
 
-    public ReservationResponse fromDomainToResponse(Reservation reservation) {
+    public ReservationResponse toResponse(Reservation reservation) {
         return new ReservationResponse(
             reservation.id(),
             reservation.userId(),
