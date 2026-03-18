@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.reserv.reservation_system.reservation.availability.ReservationAvailabilityService;
 import com.reserv.reservation_system.reservation.domain.Reservation;
 import com.reserv.reservation_system.reservation.domain.ReservationStatus;
 import com.reserv.reservation_system.reservation.persistence.ReservationEntity;
