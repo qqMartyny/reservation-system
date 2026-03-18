@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public record ErrorResponseDto(
     String message,
-    String erroMessage,
+    String errorMessage,
     LocalDateTime errorTime
 ) {
     
