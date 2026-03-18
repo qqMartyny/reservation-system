@@ -1,22 +1,11 @@
 package com.reserv.reservation_system.reservation.domain;
 
 import java.time.LocalDate;
-
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotNull;
-
 public record Reservation(
-    @NotNull
     Long id,
-    @NotNull
     Long userId,
-    @NotNull
     Long roomId,
-    @FutureOrPresent
-    @NotNull
     LocalDate startDate,
-    @FutureOrPresent
-    @NotNull
     LocalDate endDate,
 
     ReservationStatus status
