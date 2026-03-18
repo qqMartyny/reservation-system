@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.reserv.reservation_system.reservation.domain.Reservation;
+import com.reserv.reservation_system.reservation.service.ReservationMapper;
 import com.reserv.reservation_system.reservation.service.ReservationSearchFilter;
 import com.reserv.reservation_system.reservation.service.ReservationService;
 
@@ -30,9 +31,14 @@ public class ReservationController {
 
 
     private final ReservationService reservationService;
+    private final ReservationMapper mapper;
 
-    public ReservationController(ReservationService reservationService) {
+    public ReservationController(
+        ReservationService reservationService,
+        ReservationMapper mapper
+    ) {
         this.reservationService = reservationService;
+        this.mapper = mapper;
     }
 
     @GetMapping("/{id}")
