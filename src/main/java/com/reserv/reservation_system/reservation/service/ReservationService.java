@@ -27,8 +27,7 @@ public class ReservationService {
 
     public ReservationService(
         ReservationRepository repository, 
-        ReservationMapper mapper,
-        ReservationAvailabilityService availabilityService
+        ReservationMapper mapper
     ) {
         this.repository = repository;
         this.mapper = mapper;
