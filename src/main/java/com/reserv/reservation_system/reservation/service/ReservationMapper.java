@@ -2,6 +2,7 @@ package com.reserv.reservation_system.reservation.service;
 
 import org.springframework.stereotype.Component;
 
+import com.reserv.reservation_system.reservation.api.dto.CreateReservationRequest;
 import com.reserv.reservation_system.reservation.domain.Reservation;
 import com.reserv.reservation_system.reservation.persistence.ReservationEntity;
 
@@ -27,6 +28,17 @@ public class ReservationMapper {
             reservation.startDate(),
             reservation.endDate(),
             reservation.status()        
+        );
+    }
+
+    public Reservation fromRequestToDomain(CreateReservationRequest reservationRequest) {
+        return new Reservation(
+            null, 
+            reservationRequest.userId(),
+            reservationRequest.roomId(),
+            reservationRequest.startDate(),
+            reservationRequest.endDate(),
+            null
         );
     }
 }
