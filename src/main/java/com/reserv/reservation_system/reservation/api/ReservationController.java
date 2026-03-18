@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.reserv.reservation_system.reservation.api.dto.CreateReservationRequest;
+import com.reserv.reservation_system.reservation.api.dto.ReservationResponse;
 import com.reserv.reservation_system.reservation.domain.Reservation;
 import com.reserv.reservation_system.reservation.service.ReservationMapper;
 import com.reserv.reservation_system.reservation.service.ReservationSearchFilter;
@@ -67,15 +69,19 @@ public class ReservationController {
     }
 
     @PostMapping
-    public ResponseEntity<Reservation>  createReservation(
-        @RequestBody @Valid Reservation reservationToCreate
+    public ResponseEntity<ReservationResponse>  createReservation(
+        @RequestBody @Valid CreateReservationRequest request
     ) {
         
         log.info("Called createReservation");
 
+        Reservation domain = mapper.toDomain(request);
+        Reservation saved = reservationService.createReservation(domain);
+        ReservationResponse response = mapper.toResponse(saved);
+
         return ResponseEntity.status(HttpStatus.CREATED)
                 .header("test-header", "123")
-                .body(reservationService.createReservation(reservationToCreate));
+                .body(response);
     }
 
     @PutMapping("/{id}")
