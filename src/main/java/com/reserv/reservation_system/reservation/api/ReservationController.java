@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.reserv.reservation_system.reservation.api.dto.CreateReservationRequest;
+import com.reserv.reservation_system.reservation.api.dto.ReservationRequest;
 import com.reserv.reservation_system.reservation.api.dto.ReservationResponse;
 import com.reserv.reservation_system.reservation.domain.Reservation;
 import com.reserv.reservation_system.reservation.service.ReservationMapper;
@@ -44,15 +44,17 @@ public class ReservationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Reservation>  getReservationById(@PathVariable("id") Long id) {
+    public ResponseEntity<ReservationResponse>  getReservationById(@PathVariable("id") Long id) {
         
-        log.info("Called getReservationById() with id " + id);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(reservationService.getReservationById(id));
+        log.info("Called getReservationById() with id {}", id);
+
+        return ResponseEntity.ok(
+            mapper.toResponse(reservationService.getReservationById(id))
+        );
     }
 
     @GetMapping
-    public ResponseEntity<List<Reservation>> getAllReservations(
+    public ResponseEntity<List<ReservationResponse>> getAllReservations(
             @RequestParam(name = "roomId", required = false) Long roomId,
             @RequestParam(name = "userId", required = false) Long userId,
             @RequestParam(name = "pageSize", required = false) Integer pageSize,
@@ -64,13 +66,17 @@ public class ReservationController {
                 userId, 
                 pageSize, 
                 pageNumber);
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(reservationService.searchAllByFilter(filter));
+
+        List<ReservationResponse> response = reservationService.searchAllByFilter(filter)
+                .stream()
+                .map(mapper::toResponse)
+                .toList();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping
     public ResponseEntity<ReservationResponse>  createReservation(
-        @RequestBody @Valid CreateReservationRequest request
+        @RequestBody @Valid ReservationRequest request
     ) {
         
         log.info("Called createReservation");
@@ -85,33 +91,37 @@ public class ReservationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Reservation> updateReservation(
+    public ResponseEntity<ReservationResponse> updateReservation(
         @PathVariable("id") Long id,
-        @RequestBody @Valid Reservation reservationToUpdate
+        @RequestBody @Valid ReservationRequest request
     ) {
-        log.info("Called updateReservation with id {id} for reservation {reservationToUpdate}",
-            id, reservationToUpdate);
-        var updated = reservationService.updateReservation(id, reservationToUpdate);
-        return ResponseEntity.ok(updated);
+        log.info("Called updateReservation with id {} for reservation {}",
+            id, request);
+
+        Reservation domain = mapper.toDomain(request);
+        Reservation saved = reservationService.updateReservation(id, domain);
+        ReservationResponse response = mapper.toResponse(saved);
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}/cancel")
     public ResponseEntity<Void> deleteReservation(
         @PathVariable("id") Long id
     ) {
-        log.info("Called deleteReservation with id {id} ", id);
+        log.info("Called deleteReservation with id {}", id);
 
         reservationService.cancelReservation(id);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/{id}/approve") 
-    public ResponseEntity<Reservation> approveReservation(
+    public ResponseEntity<ReservationResponse> approveReservation(
         @PathVariable("id") Long id
     ) {
-        log.info("Called approveReservation with id {id} ", id);
+        log.info("Called approveReservation with id {}", id);
 
-        var reservation = reservationService.approveReservation(id);
-        return ResponseEntity.ok(reservation);
+        return ResponseEntity.ok(
+            mapper.toResponse(reservationService.approveReservation(id))
+        );
     }
 }
