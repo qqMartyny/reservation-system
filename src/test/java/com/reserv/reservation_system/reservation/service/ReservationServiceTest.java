@@ -13,6 +13,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import com.reserv.reservation_system.reservation.ReservationFixtures;
 import com.reserv.reservation_system.reservation.domain.Reservation;
 import com.reserv.reservation_system.reservation.domain.ReservationStatus;
 import com.reserv.reservation_system.reservation.persistence.ReservationEntity;
@@ -35,23 +36,8 @@ class ReservationServiceTest {
     @Test
     void shouldReturnReservationById () {
 
-        var entity = new ReservationEntity(
-            1L,
-            1L,
-            1L,
-            LocalDate.now().plusDays(2),
-            LocalDate.now().plusDays(5),
-            ReservationStatus.PENDING
-        );
-
-        var domain = new Reservation(
-            1L,
-            1L,
-            1L,
-            LocalDate.now().plusDays(2),
-            LocalDate.now().plusDays(5),
-            ReservationStatus.PENDING
-        );
+        var entity = ReservationFixtures.defaultEntity();
+        var domain = ReservationFixtures.defaultDomain();
 
         when(repository.findById(1L)).thenReturn(Optional.of(entity));
         when(mapper.toDomain(entity)).thenReturn(domain);
@@ -62,11 +48,16 @@ class ReservationServiceTest {
         
         assertThat(result.id()).isEqualTo(1L);
         assertThat(result.status()).isEqualTo(ReservationStatus.PENDING);
+    }
 
+    @Test
+    void shouldThrowEntityNotFoundException() {
+        
         when(repository.findById(99L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> service.getReservationById(99L))
             .isInstanceOf(EntityNotFoundException.class)
             .hasMessageContaining("99");
     }
+
 }
