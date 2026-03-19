@@ -39,14 +39,14 @@ class ReservationServiceTest {
         var entity = ReservationFixtures.defaultEntity();
         var domain = ReservationFixtures.defaultDomain();
 
-        when(repository.findById(1L)).thenReturn(Optional.of(entity));
+        when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
         when(mapper.toDomain(entity)).thenReturn(domain);
 
-        var result = service.getReservationById(1L);
+        var result = service.getReservationById(entity.getId());
 
         assertThat(result).isEqualTo(domain);
         
-        assertThat(result.id()).isEqualTo(1L);
+        assertThat(result.id()).isEqualTo(entity.getId());
         assertThat(result.status()).isEqualTo(ReservationStatus.PENDING);
     }
 
