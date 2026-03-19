@@ -4,7 +4,6 @@ import static org.mockito.Mockito.when;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -14,9 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.reserv.reservation_system.reservation.ReservationFixtures;
-import com.reserv.reservation_system.reservation.domain.Reservation;
 import com.reserv.reservation_system.reservation.domain.ReservationStatus;
-import com.reserv.reservation_system.reservation.persistence.ReservationEntity;
 import com.reserv.reservation_system.reservation.persistence.ReservationRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -58,6 +55,18 @@ class ReservationServiceTest {
         assertThatThrownBy(() -> service.getReservationById(99L))
             .isInstanceOf(EntityNotFoundException.class)
             .hasMessageContaining("99");
+    }
+
+    @Test
+    void shouldThrowExceptionWhenStatusIsSpecified() {
+
+        var domain = ReservationFixtures.domainWithStatus(
+            ReservationStatus.APPROVED
+        );
+        
+        assertThatThrownBy(() -> service.createReservation(domain))
+            .isInstanceOf(IllegalArgumentException.class);
+        
     }
 
 }

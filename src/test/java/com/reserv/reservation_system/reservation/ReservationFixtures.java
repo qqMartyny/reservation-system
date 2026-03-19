@@ -29,4 +29,15 @@ public class ReservationFixtures {
             ReservationStatus.PENDING
         );
     }
+
+    public static Reservation domainWithStatus(ReservationStatus status) {
+        return new Reservation(
+            1L, 
+            1L,
+            1L,
+            LocalDate.now().plusDays(1),
+            LocalDate.now().plusDays(5),
+            status
+        );
+    }
 }
