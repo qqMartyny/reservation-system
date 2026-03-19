@@ -33,8 +33,8 @@ class ReservationServiceTest {
     @Test
     void shouldReturnReservationById () {
 
-        var entity = ReservationFixtures.defaultEntity();
-        var domain = ReservationFixtures.defaultDomain();
+        var entity = ReservationFixtures.defaultEntity(ReservationStatus.PENDING);
+        var domain = ReservationFixtures.defaultDomain(ReservationStatus.PENDING);
 
         when(repository.findById(entity.getId())).thenReturn(Optional.of(entity));
         when(mapper.toDomain(entity)).thenReturn(domain);
@@ -60,13 +60,28 @@ class ReservationServiceTest {
     @Test
     void shouldThrowExceptionWhenStatusIsSpecified() {
 
-        var domain = ReservationFixtures.domainWithStatus(
+        var domain = ReservationFixtures.defaultDomain(
             ReservationStatus.APPROVED
         );
         
         assertThatThrownBy(() -> service.createReservation(domain))
             .isInstanceOf(IllegalArgumentException.class);
-        
+    }
+
+    @Test
+    void succesfulReservationCreating() {
+
+        var inputDomain = ReservationFixtures.defaultDomain(null);
+        var entity = ReservationFixtures.defaultEntity(ReservationStatus.PENDING);
+        var outputDomain = ReservationFixtures.defaultDomain(ReservationStatus.PENDING);
+
+        when(mapper.toEntity(inputDomain)).thenReturn(entity);
+        when(repository.save(entity)).thenReturn(entity);
+        when(mapper.toDomain(entity)).thenReturn(outputDomain);
+
+        service.createReservation(inputDomain);
+
+        assertThat(entity.getStatus()).isEqualTo(ReservationStatus.PENDING);
     }
 
 }

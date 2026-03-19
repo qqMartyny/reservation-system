@@ -8,29 +8,18 @@ import com.reserv.reservation_system.reservation.persistence.ReservationEntity;
 
 public class ReservationFixtures {
     
-    public static ReservationEntity defaultEntity() {
+    public static ReservationEntity defaultEntity(ReservationStatus status) {
         return new ReservationEntity(
             1L,
             1L,
             1L,
             LocalDate.now().plusDays(1),
             LocalDate.now().plusDays(5),
-            ReservationStatus.PENDING
+            status
         );
     }
 
-    public static Reservation defaultDomain() {
-        return new Reservation(
-            1L, 
-            1L,
-            1L,
-            LocalDate.now().plusDays(1),
-            LocalDate.now().plusDays(5),
-            ReservationStatus.PENDING
-        );
-    }
-
-    public static Reservation domainWithStatus(ReservationStatus status) {
+    public static Reservation defaultDomain(ReservationStatus status) {
         return new Reservation(
             1L, 
             1L,
